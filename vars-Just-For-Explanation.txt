@@ -1,0 +1,195 @@
+%% General simulation tweaks (GST)
+% 1 -> Subtractive textured wheel (1) or Additive textured wheel (0) 
+% 2 -> Point Grit (1) or Shaped grit (0)
+% 3 -> Work surface generation, with animation (1) or without animation (0) / NOTE: Set this value to 0 for surface generation or 2 to skip surface generation.
+% 4 -> Force module(1)
+% 5 -> Temperature module(1)
+% 6 -> Deflection module (1)
+% 7 -> Wear module (1)
+
+GST = [1, 1, 0, 1, 1, 0, 0]
+
+% Specify the test number here, to prevent overwriting
+TestNo = 26
+
+%% Specific tweaks
+
+% Wheel Diameter [cm]
+WD = 1.5
+%  Wheel radius [mm]
+WR = (WD * 10) / 2
+%  Wheel Width [cm]
+WW = 1
+% Wheel shaft length, overhang length [mm]
+WL = 3
+% Workpiece dimensions [Width, Height, Length] in [mm]
+workDimz = [WW * 10, 25, 1]
+%  Workpiece Height [mm]
+WH = workDimz(2)
+% Number of strips(or any other pattern's template) in the width of the wheel [#]
+SN = 2
+%  Strip Angle (Applicable only if one of the pre-defined patterns is selected; /, \, v, ^, x) [degrees]
+SA = 30
+% Fineness or Number of divisions between two adjacent strips
+Fn1 = 7
+%  Fineness in periphery of the wheel
+Fn2 = 4
+% Number of rotations
+NR = 15
+% Trigonometry system, "Rad" or "Dgr" (Obsolescent)
+TS = 'Dgr'
+%  End Angle or Last angle (Obsolescent)
+EA = 1400
+%  Number of elemental disks (Obsolescent)
+disks = 0
+% Pattern type, /, \, v, ^, x, or arbitrary curve ~ (the equation should be defined in 'EQ' variable)
+Pttrn = '/'
+% Equation of the pattern defined in x, applicable only for pattern of type ~
+EQ = '(x ^ 5 + x ^ 3) / (x ^ 4 + 3 * x)'
+%  The interval for the pattern equation
+INT = [-1 1]
+% Pattern direction, either 'ver'  for vertical or 'hor' for horizontal
+PD = 'hor'
+% Pattern thickness, 0, 1, 2, 3, 4, ...
+PTh = 0
+% Pattern spacing, white space between tow pattern rows
+PS = 0
+% Grit density, expressed as the percentage of the grits that initially are present in the full areas of the pattern
+GD = .35
+% Width of each grit [mm], not equal to width of cut
+GW = workDimz(1) / Fn1
+% Grit shape (^, /, \, -, ~, or m), if curved, the equation should be provided in the GEQ in x and y, or the grit shape can be input manually
+GSh = 'm'
+% Grit resolution, odd value for the number of columns please
+GR = [4, 3]
+% Grit shape, manually defined in a matrix
+GritTemplate = [1 3 4 5 5.5 5 4 3 1; .8 2.5 3.2 4 4.5 4 3.2 2.5 .8; .2 1.5 2 2 2.2 2 2 1.5 .2; 0 0 0 .1 .2 .1 0 0 0]
+% Equation of the grit defined as a surface (2D in x & y), applicable only for grit shape of type ~
+GEQ = 'cos(y) + sin(x)'
+%  The x and y intervals for the grit surface
+xint = [-2 2]
+yint = [-4 4]
+% Grit Matrix
+GM = []
+
+%% Grit Charachterization (based on a Gaussian dist.)
+
+% Min, Max, Average(mu), and Standard Deviation (sig) of rake angles
+rmin = -55
+rmax = -45
+rmu = (rmax + rmin) / 2
+rsig = (rmax - rmin) / 4
+% Min, Max, Average(mu), and Standard Deviation (sig) of the grit heights
+gmin = 125
+gmax = 165
+gmu = (gmax + gmin) / 2
+gsig = (gmax - gmin) / 4
+% Min, Max, Average(mu), and Standard Deviation (sig) of the clearance angles
+cmin = 1.5
+cmax = 4.5
+cmu = (cmax + cmin) / 2
+csig = (cmax - cmin) / 4
+% Min, Max, Average(mu), and Standard Deviation (sig) of the width of cuts (for each grit)
+wmin = 15
+wmax = 25
+wmu = (wmax + wmin) / 2
+wsig = (wmax - wmin) / 4
+% Min, Max, Average(mu), and Standard Deviation (sig) of the hone radii
+hmin = .9
+hmax = 1.2
+hmu = (hmax + hmin) / 2
+hsig = (hmax - hmin) / 4
+% Min, Max, Average(mu), and Standard Deviation (sig) of the nose radii
+nmin = 1.1
+nmax = 2.1
+nmu = (nmax + nmin) / 2
+nsig = (nmax - nmin) / 4
+% Min, Max, Average(mu), and Standard Deviation (sig) of the oblique angles
+omin = 3
+omax = 39
+omu = (omax + omin) / 2
+osig = (omax - omin) / 4
+% Min, Max, Average(mu), and Standard Deviation (sig) of the stagnation angles
+smin = 48
+smax = 64
+smu = (smax + smin) / 2
+ssig = (smax - smin) / 4
+
+% Initial location of the center of the wheel (x and z coordinates), zero for x corresponds to the very start of the workpiece, zero for z means the highest grit of the wheel will penetrate to the work exactly for RDOC
+xc0 = 0
+zc0 = 0
+% Eccentricity of the wheel, defined as the ratio of the greatest diameter of the oval to it's smallest diameter, 1 means both are equal and the wheel is a perfect circle!
+exen = 1
+% Run-out of the wheel, run-out happens as the wheel wears out, therefore, must be measured after the tests, not neccessary for now
+RO = 0
+% Initial angle of the greatest diameter of the wheel measured from the flat surface of the workpiece, (+) for CW and (-) for CCW [ex.: /_ = -pi/4]
+phase = - pi * 0 / 4
+% It is very probable that the center of the wheel and the center of grinding machine do not coincide perfectly, in that case the amount of deviation can be enterred as distance in [mm]
+offcentre = 0
+% Revolution per minute [rpm]
+rpm = 12500
+% Revolution per second [rps]
+rps = rpm / 60
+% Rotational speed [rad/s]
+Omega = rps * 2 * pi
+% Step angle in [degree], if the wheel is relatively small in diameter, the StpA can be set to even 8 or 10 
+StpA = 1
+% Time steps
+StpT = (2 * pi * StpA) / (360 * Omega)
+% The maximum number of step
+MaxStep = round((NR * 360) / StpA) - 1
+% Feed [mm/s]
+fdm = 200 / 60
+% Feed per revolution [mm/rev]
+fdr = fdm / rps
+% Operation mode, down/up grinding
+OM = 'down'
+% Radial depth of cut [mm]
+RDOC = .02
+% Axial depth of cut, or the width of the wheel [mm]
+ADOC = workDimz(1)
+% Fit model for the fitted curves to the trajectory, fit models can be found from matlab help, 'linearinterp' works better if possible, if not 'poly9' or etc.
+fitModel = 'linearinterp'
+
+div1 = 10
+% Number of discretizaion in x direction for workpiece
+div2 = 1e3
+% Whether plot the trajectory of the grits when a 'cut' has taken place 
+plott = 'n'
+% Arc discretization, the number of divisions in the arc completed by each grit in one StpA, There for if the StpA is large or the diameter of the wheel is large, it is better to consider greater values for ad, if StpA is 1 or 2 and wheel is relatively small, ad of 20 or 30 works fine
+ad = 100
+% Temperature of the Ambient (Ta) and Reference (Tr)
+Ta = 20
+Tr = 20
+% Initial temperature of the workpiece
+Tins = 22
+% Finite Difference method for solving the temperature field, 'FE' for Forward Euler and 'MCC' for MacCormack, former is faster, latter is more accurate. 'CN' for Crank-Nicolson, an implicit method with no stability limitation.
+FDmethod = 'FE'
+% This variable is just for creating the Crank-Nicolson matrix, it MUST be 'NotComposed' initially.
+MatCom = 'NotComposed'
+% The number of time divisions between two consequent 'StpT's
+timeres = 10
+% Epsilon, the fraction of the generated heat that goes to the workpiece
+eps = .7442
+% Boundaries condition, 'cons' for constant temperature, 'conv' for convection, 'flx' for constant heat flux, the location of each BC is depicted at program commencement
+BC = {'cons', 'cons', 'cons', 'cons'}
+% The corresponding value of each BC, for 'cons' the value is wall temp. in [C], for 'conv' the value is fluid temp. in [C], for 'flx' the value is heat flux in [W/mm^2]
+BCV = [22, 22, 22, 22]
+% Max temperature difference (deltaT) of the coolant and the workpiece
+deltmax = 5
+% List of materials for the workpiece, the number is input to the mtrl variable
+mtrlz = {'Steel Bearing', 'Steel AISI 1050', 'Steel AISI 4340', 'Inconel', 'Titanium Ti6Al4V', 'Inconel Additive'}
+mtrl = 1
+% Grinding Condition, 'wet' if coolant is water or oil and 'dry' if the coolant is air, forget about it! 
+GCz = {'dry', 'wet'}
+GC = 1
+% List of coolants
+clntz = {'Water', 'Oil', 'Air'}
+clnt = 1
+% List of material of the grits
+grtz = {'CBN', 'AO'}
+grt = 1
+Et = 210e9
+Rt = .003
+Ct = .001
+rhot = 7800
